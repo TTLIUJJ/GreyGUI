@@ -1,4 +1,4 @@
-package gui.component;
+package gui;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -8,7 +8,6 @@ import java.io.File;
 public class OpenButton extends JButton {
     private File file;
     private DataTable dataTable;
-
     public OpenButton(DataTable dataTable) {
         super("打开");
         this.dataTable = dataTable;
@@ -19,9 +18,7 @@ public class OpenButton extends JButton {
         return file;
     }
 
-    public void setFile(File file) {
-        this.file = file;
-    }
+    
 
     class OpenListener implements ActionListener {
         @Override
@@ -31,8 +28,11 @@ public class OpenButton extends JButton {
             if (rVal == JFileChooser.APPROVE_OPTION) {
                 file = chooser.getSelectedFile();
                 System.out.println(file.getName());
-                dataTable.readAndProcessData(file);
+                dataTable.openNewDataTable(file);
             }
         }
     }
+
+
+
 }

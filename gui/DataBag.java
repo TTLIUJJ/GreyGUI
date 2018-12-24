@@ -1,14 +1,29 @@
-package gui.gra;
+package gui;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class DataBag {
+    private static DataBag dataBag;
+    private List<DataModel> dataModelList;
+
     private double e = 2.718281828459;
     private double [][]rawData;
     private double [][]nondimensionData;
     private double [][]index; // 分辨系数
     private double [][]ratio; // 关联系数
     private double   []degree; // 关联度
+
+    private DataBag() { }
+
+    public static DataBag getDataBag() {
+
+        return null;
+    }
+
+    private void initAfterOpenNewFile() {
+
+    }
 
     /** ------------- 无 量 纲 化 处 理------------------- */
     public void nondimensionalization(NondimensionType type) {

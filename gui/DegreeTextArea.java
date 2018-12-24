@@ -1,4 +1,4 @@
-package gui.component;
+package gui;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

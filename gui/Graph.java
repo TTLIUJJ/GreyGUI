@@ -1,4 +1,4 @@
-package gui.component;
+package gui;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
@@ -49,19 +49,19 @@ public class Graph {
 
     private static CategoryDataset getDataset() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(1, "First", "2013");
-        dataset.addValue(3, "First", "2014");
-        dataset.addValue(2, "First", "2015");
-        dataset.addValue(6, "First", "2016");
-        dataset.addValue(5, "First", "2017");
-        dataset.addValue(12, "First", "2018");
-
-        dataset.addValue(14, "Second", "2013");
-        dataset.addValue(13, "Second", "2014");
-        dataset.addValue(12, "Second", "2015");
-        dataset.addValue(9, "Second", "2016");
-        dataset.addValue(5, "Second", "2017");
-        dataset.addValue(7, "Second", "2018");
+//        dataset.addValue(1, "First", "2013");
+//        dataset.addValue(3, "First", "2014");
+//        dataset.addValue(2, "First", "2015");
+//        dataset.addValue(6, "First", "2016");
+//        dataset.addValue(5, "First", "2017");
+//        dataset.addValue(12, "First", "2018");
+//
+//        dataset.addValue(14, "Second", "2013");
+//        dataset.addValue(13, "Second", "2014");
+//        dataset.addValue(12, "Second", "2015");
+//        dataset.addValue(9, "Second", "2016");
+//        dataset.addValue(5, "Second", "2017");
+//        dataset.addValue(7, "Second", "2018");
 
         return dataset;
     }
