@@ -16,7 +16,7 @@ import java.util.List;
 public class TableDataModel extends AbstractTableModel {
     private List<DataModel> list = new ArrayList<>();
 
-    public List<DataModel> getList() {
+    public List<DataModel> getDataModelList() {
         return list;
     }
 
@@ -61,7 +61,6 @@ public class TableDataModel extends AbstractTableModel {
                     }
                 }
                 DataModel dataModel = new DataModel(i+1, points);
-                System.out.println(dataModel);
                 list.add(dataModel);
             }
         } catch (IOException e) {

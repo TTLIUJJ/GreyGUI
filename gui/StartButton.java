@@ -1,22 +1,38 @@
 package gui;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class StartButton extends JButton {
-    private NondimensionType type;
-    private Model model;
+    private static GreyGUI greyGUI;
+    private DataTable dataTable;
 
-    public StartButton(String name) {
+    public StartButton(String name, DataTable dataTable) {
         super(name);
-        type  = NondimensionType.NONE;
-        model = Model.NONE;
+        this.dataTable = dataTable;
     }
 
-    public void setNondimensionType(NondimensionType type) {
-        this.type = type;
+
+    public void laterInitListener() {
+        if (greyGUI == null) {
+            greyGUI = GreyGUI.getGUIComponent();
+        }
+        addActionListener(new StartListener());
     }
 
-    public void setModel(Model model) {
-        this.model = model;
+    class StartListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            NondimensionTypeBox nondimensionTypeBox1 = greyGUI.getNondimensionTypeBox();
+            ModelBox modelBox = greyGUI.getModelBox();
+
+            dataTable.startCompute(nondimensionTypeBox1.getType(), modelBox.getAlModel());
+
+            double []degree = dataTable.getDataBag().getDegree();
+            for (double x : degree) {
+                System.out.println(x);
+            }
+        }
     }
 }

@@ -3,10 +3,10 @@ package gui;
 import javax.swing.*;
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 
 public class DataTable extends JTable {
     private TableDataModel tableDataModel = new TableDataModel();
+    private DataBag dataBag;
 
     public DataTable() {
         initDefaultTableModel();
@@ -22,12 +22,27 @@ public class DataTable extends JTable {
     }
 
     public void openNewDataTable(File file) {
-        tableDataModel = new TableDataModel();
         tableDataModel.setTableData(file);
         setModel(tableDataModel);
+
+        for (DataModel model : tableDataModel.getDataModelList()) {
+            System.out.println(model);
+        }
     }
 
-    public List<DataModel> getData() {
-        return tableDataModel.getList();
+    public void startCompute(NondimensionType type, Model model) {
+        this.dataBag = new DataBag(tableDataModel.getDataModelList());
+
+        dataBag.nondimensionalization(type);
+        dataBag.modelAlgorithm(model);
     }
+
+    public DataBag getDataBag() {
+        return dataBag;
+    }
+
+    public void setDataBag(DataBag dataBag) {
+        this.dataBag = dataBag;
+    }
+
 }

@@ -6,30 +6,33 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class OpenButton extends JButton {
-    private File file;
+    private static GreyGUI greyGUI;
     private DataTable dataTable;
-    public OpenButton(DataTable dataTable) {
-        super("打开");
+
+    public OpenButton(String name, DataTable dataTable) {
+        super(name);
         this.dataTable = dataTable;
+    }
+
+    public void laterInitListener() {
+        if (greyGUI == null) {
+            greyGUI = GreyGUI.getGUIComponent();
+        }
         addActionListener(new OpenListener());
     }
-
-    public File getFile() {
-        return file;
-    }
-
-    
 
     class OpenListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             JFileChooser chooser = new JFileChooser();
             int rVal = chooser.showSaveDialog(OpenButton.this);
+
             if (rVal == JFileChooser.APPROVE_OPTION) {
-                file = chooser.getSelectedFile();
+                File file = chooser.getSelectedFile();
                 System.out.println(file.getName());
                 dataTable.openNewDataTable(file);
             }
+
         }
     }
 

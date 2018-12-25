@@ -19,6 +19,6 @@ public enum  NondimensionType {
     public int getIndex() {
         return index;
     }
-    public String getDesc() { return desc; }
+    public final String getDesc() { return desc; }
 
 }

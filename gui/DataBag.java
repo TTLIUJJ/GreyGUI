@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DataBag {
-    private static DataBag dataBag;
     private List<DataModel> dataModelList;
 
     private double e = 2.718281828459;
@@ -14,16 +13,68 @@ public class DataBag {
     private double [][]ratio; // 关联系数
     private double   []degree; // 关联度
 
-    private DataBag() { }
-
-    public static DataBag getDataBag() {
-
-        return null;
+    public DataBag(List<DataModel> list) {
+        this.dataModelList = list;
+        initAfterOpenNewFile();
     }
 
     private void initAfterOpenNewFile() {
+        int i = 0;
+        for ( ;i < dataModelList.size(); ++i) {
+            DataModel dataModel = dataModelList.get(i);
+            String []points = dataModel.getPoints();
+            boolean dataRow = true;
+            for (int j = 0; j < points.length; ++j) {
+                try {
+                    double x = Double.parseDouble(points[j]);
+                } catch (Exception e) {
+                    dataRow = false;
+                    break;
+                }
+            }
+            if (dataRow) {
+                break;
+            }
+        }
 
+        int n = dataModelList.size() - i;
+        int m = dataModelList.get(0).getPoints().length;
+        rawData = new double[m][n];
+        int beg = i;
+
+        for ( ; i < dataModelList.size(); ++i) {
+            String []points = dataModelList.get(i).getPoints();
+            for (int j = 0; j < points.length; ++j) {
+                rawData[j][i-beg] = Double.parseDouble(points[j]);
+            }
+        }
+
+        nondimensionData = new double[m][n];
+        index  = new double[m][n];
+        ratio  = new double[m][n];
+        degree = new double[m];
     }
+
+    public double[][] getRawData() {
+        return rawData;
+    }
+
+    public double[][] getNondimensionData() {
+        return nondimensionData;
+    }
+
+    public double[][] getIndex() {
+        return index;
+    }
+
+    public double[][] getRatio() {
+        return ratio;
+    }
+
+    public double[] getDegree() {
+        return degree;
+    }
+
 
     /** ------------- 无 量 纲 化 处 理------------------- */
     public void nondimensionalization(NondimensionType type) {
@@ -50,27 +101,29 @@ public class DataBag {
     public void traditional() {
         double max = Double.MIN_VALUE;
         double min = Double.MAX_VALUE;
-        for (int i = 0; i < nondimensionData.length; ++i) {
-            for (int j = 1; j < nondimensionData[i].length; ++j) {
-                double val = Math.abs(nondimensionData[i][j] - nondimensionData[i][0]);
-                max = val > max ? val : max;
-                min = val < min ? val : min;
+        for (int i = 1; i < nondimensionData.length; ++i) {
+            for (int j = 0; j < nondimensionData[i].length; ++j) {
+                double diff = Math.abs(nondimensionData[i][j] - nondimensionData[0][j]);
+                max = diff > max ? diff : max;
+                min = diff < min ? diff : min;
             }
         }
 
-        Arrays.fill(index, 0.5);
-        for (int i = 0; i < nondimensionData.length; ++i) {
-            for (int j = 1; j < nondimensionData.length; ++j) {
-                double diff = Math.abs(nondimensionData[i][j] - nondimensionData[i][0]);
+        for (double[] x : index) {
+            Arrays.fill(x, 0.5);
+        }
+
+        for (int i = 1; i < nondimensionData.length; ++i) {
+            for (int j = 0; j < nondimensionData[i].length; ++j) {
+                double diff = Math.abs(nondimensionData[i][j] - nondimensionData[0][j]);
                 ratio[i][j] = (min + max * 0.5) / (diff + max * 0.5);
-            }
-        }
+            }        }
 
-        for (int j = 1; j < ratio[0].length; ++j) {
-            for (int i = 0; i < ratio.length; ++i) {
-                degree[j] += ratio[i][j];
+        for (int i = 1; i < ratio.length; ++i) {
+            for (int j = 0; j < ratio[i].length; ++j) {
+                degree[i] += ratio[i][j];
             }
-            degree[j] /= (double) ratio.length;
+            degree[i] /= (double) ratio[i].length;
         }
     }
 
@@ -78,26 +131,20 @@ public class DataBag {
     public void general() {
         startValueZerolization();
         double s0 = 0;
-        for (int i = 0; i < nondimensionData.length; ++i) {
-            if (i == nondimensionData.length - 1) {
-                s0 += 0.5 * nondimensionData[i][0];
-            }
-            else {
-                s0 += nondimensionData[i][0];
-            }
+
+        for (double d : nondimensionData[0]) {
+            s0 += d;
         }
-        double sI;
-        for (int j = 1; j < nondimensionData[0].length; ++j) {
-            sI = 0;
-            for (int i = 0; i < nondimensionData.length; ++i) {
-                if (i == nondimensionData.length - 1) {
-                    sI += 0.5 * nondimensionData[i][j];
-                }
-                else {
-                    sI += nondimensionData[i][j];
-                }
+        s0 -= 0.5 * nondimensionData[0][nondimensionData[0].length - 1];
+
+
+        for (int i = 1; i < nondimensionData.length; ++i) {
+            double sI = 0;
+            for (double d : nondimensionData[i]) {
+                sI += d;
             }
-            degree[j] = (1 + Math.abs(s0) + Math.abs(sI)) / (1 + Math.abs(s0) + Math.abs(sI) + Math.abs(sI - s0));
+            sI -= 0.5 * nondimensionData[i][nondimensionData[i].length-1];
+            degree[i] = (1 + Math.abs(s0) + Math.abs(sI)) / (1 + Math.abs(s0) + Math.abs(sI) + Math.abs(sI - s0));
         }
 
     }
@@ -107,15 +154,17 @@ public class DataBag {
         double avg = 0;
         double max = Double.MIN_VALUE;
         double min = Double.MAX_VALUE;
-        for (int j = 1; j < nondimensionData[0].length; ++j) {
-            for (int i = 0; i < nondimensionData.length; ++i) {
-                double diff = Math.abs(nondimensionData[i][j] - nondimensionData[i][0]);
+
+        for (int i = 0; i < nondimensionData.length; ++i) {
+            for (int j = 1; j < nondimensionData[i].length; ++j) {
+                double diff = Math.abs(nondimensionData[i][j] - nondimensionData[0][j]);
                 avg += diff;
                 max = diff > max ? diff : max;
                 min = diff < min ? diff : min;
             }
         }
-        avg /= (double)(nondimensionData.length * (nondimensionData[0].length - 1));
+
+        avg /= (double)((nondimensionData.length - 1) * nondimensionData[0].length);
         double ek = avg / max;
         double _ek = 1 / ek;
         double p;
@@ -131,18 +180,22 @@ public class DataBag {
             p = 0.5;
         }
 
-        for (int j = 1; j < nondimensionData[0].length; ++j) {
-            for (int i = 0; i < nondimensionData.length; ++i) {
-                double diff = Math.abs(nondimensionData[i][j] - nondimensionData[i][0]);
+        for (double []ds : index) {
+            Arrays.fill(ds, 0.5);
+        }
+
+        for (int i = 1; i < nondimensionData.length; ++i) {
+            for (int j = 0; j < nondimensionData[i].length; ++j) {
+                double diff = Math.abs(nondimensionData[i][j] - nondimensionData[0][j]);
                 ratio[i][j] = (min + p * max) / (diff + p * max);
             }
         }
 
-        for (int j = 1; j < ratio[0].length; ++j) {
-            for (int i = 0; i < ratio.length; ++i) {
-                degree[j] += ratio[i][j];
+        for (int i = 1; i < ratio.length; ++i) {
+            for (int j = 0; j < ratio[0].length; ++j) {
+                degree[i] += ratio[i][j];
             }
-            degree[j] /= (double) ratio.length;
+            degree[i] /= (double) ratio[i].length;
         }
     }
 
@@ -150,58 +203,66 @@ public class DataBag {
     public void shannon() {
         startValueZerolization();
         double max = Double.MIN_VALUE;
+
         for (int i = 0; i < nondimensionData.length; ++i) {
-            for (int j = 1; j < nondimensionData.length; ++j) {
-                double val = Math.abs(nondimensionData[i][j] - nondimensionData[i][0]);
-                max = val > max ? val : max;
+            for (int j = 1; j < nondimensionData[i].length; ++j) {
+                double diff = Math.abs(nondimensionData[i][j] - nondimensionData[0][j]);
+                max = diff > max ? diff : max;
             }
         }
 
-        for (int i = 0; i < nondimensionData.length; ++i) {
-            for (int j = 1; j < nondimensionData.length; ++j) {
-                double val = Math.abs(nondimensionData[i][j] - nondimensionData[i][0]);
-                index[i][j] = (max * (e - 1)) / val;
+        for (int i = 1; i < nondimensionData.length; ++i) {
+            for (int j = 0; j < nondimensionData[i].length; ++j) {
+                double diff = Math.abs(nondimensionData[i][j] - nondimensionData[0][j]);
+                index[i][j] = (max * (e - 1)) / diff;
             }
         }
 
-        for (int j = 1; j < nondimensionData[0].length; ++j) {
-            for (int i = 1; i < nondimensionData.length; ++i) {
-                double diff = Math.abs(nondimensionData[i][j] - nondimensionData[i][0]);
+
+        for (int i = 1; i < nondimensionData.length; ++i) {
+            for (int j = 0; j < nondimensionData[i].length; ++j) {
+                double diff = Math.abs(nondimensionData[i][j] - nondimensionData[0][j]);
                 ratio[i][j] = (index[i][j] * max) / (diff + index[i][j] * max);
             }
         }
 
-        for (int j = 1; j < ratio[0].length; ++j) {
-            for (int i = 0; i < ratio.length; ++i) {
-                degree[j] += ratio[i][j];
+        for (int i = 1; i < ratio.length; ++i) {
+            for (int j = 0; j < ratio[0].length; ++j) {
+                degree[i] += ratio[i][j];
             }
-            degree[j] /= (double) ratio.length;
+            degree[i] /= (double) ratio[i].length;
         }
     }
 
     /** 初始值零化处理 */
     private void startValueZerolization() {
-
+        for (int i = 0; i < rawData.length; ++i) {
+            double startVal = rawData[i][0];
+            rawData[i][0] = 0.0;
+            for (int j = 1; j < rawData[i].length; ++j) {
+                rawData[i][j] -= startVal;
+            }
+        }
     }
 
 
 
     /** 标准化法 */
     private void standardization() {
-        for (int j = 0; j < rawData[0].length; ++j) {
-            double avg = getAverageValue(rawData, j);
-            double std = getStandardValue(rawData, avg, j);
-            for (int i = 0; i < rawData.length; ++i) {
+        for (int i = 0; i < rawData.length; ++i) {
+            double avg = getAverageValue(rawData[i]);
+            double std = getStandardValue(rawData[i], avg);
+            for (int j = 0; j < rawData[0].length; ++j) {
                 nondimensionData[i][j] = (rawData[i][j] - avg) / std;
             }
         }
     }
     /** 极差化法 */
     private void extremeDifference() {
-        for (int j = 0; j < rawData[0].length; ++j) {
-            double max = getMaxValue(rawData, j);
-            double min = getMinValue(rawData, j);
-            for (int i = 0; i < rawData.length; ++i) {
+        for (int i = 0; i < rawData.length; ++i) {
+            double max = getMaxValue(rawData[i]);
+            double min = getMinValue(rawData[i]);
+            for (int j = 0; j < rawData[i].length; ++j) {
                 nondimensionData[i][j] = (rawData[i][j] - min) / (max - min);
             }
         }
@@ -209,9 +270,9 @@ public class DataBag {
 
     /** 最大值的线性比例法 */
     private void linearity() {
-        for (int j = 0; j < rawData[0].length; ++j) {
-            double max = getMaxValue(rawData, j);
-            for (int i = 0; i < rawData.length; ++i) {
+        for (int i = 0; i < rawData.length; ++i) {
+            double max = getMaxValue(rawData[i]);
+            for (int j = 0; j < rawData[i].length; ++j) {
                 nondimensionData[i][j] = rawData[i][j] / max;
             }
         }
@@ -219,74 +280,75 @@ public class DataBag {
 
     /** 归一化法 */
     private void normalization() {
-        for (int j = 0; j < rawData[0].length; ++j) {
-            double accumulation = accumulation(rawData, j);
-            for (int i = 0; i < rawData.length; ++i) {
-                nondimensionData[i][j] = rawData[i][j] / accumulation;
+        for (int i = 0; i < rawData.length; ++i) {
+            double accumulateVal = accumulation(rawData[i]);
+            for (int j = 0; j < rawData[i].length; ++j) {
+                nondimensionData[i][j] = rawData[i][j] / accumulateVal;
             }
         }
+
     }
 
     /** 向量规范法 */
     private void vector() {
-        for (int j = 0; j < rawData[0].length; ++j) {
-            double temp = accumulationAndSqrt(rawData, j);
-            for (int i = 0; i < rawData.length; ++i) {
+        for (int i = 0; i < rawData.length; ++i) {
+            double temp = accumulationAndSqrt(rawData[i]);
+            for (int j = 0; j < rawData[i].length; ++j) {
                 nondimensionData[i][j] = rawData[i][j] / temp;
             }
         }
     }
 
-    private double getAverageValue(double [][]a, int j) {
+    private double getAverageValue(double[] a) {
         double sum = 0;
 
         for (int i = 0; i < a.length; ++i) {
-            sum += a[i][j];
+            sum += a[i];
         }
 
         return sum / (double)a.length;
     }
 
-    private double getStandardValue(double [][]a, double avg, int j) {
+    private double getStandardValue(double []a, double avg) {
         double sum = 0;
         for (int i = 0; i  < a.length; ++i) {
-            sum += Math.pow(a[i][j] - avg, 2);
+            sum += Math.pow(a[i] - avg, 2);
         }
 
         return Math.sqrt(sum / (double)a.length);
     }
 
-    private double getMinValue(double [][]a, int j) {
+    private double getMinValue(double []a) {
         double min = Double.MAX_VALUE;
         for (int i = 0; i < a.length; ++i) {
-            min = a[i][j] < min ? a[i][j] : min;
+            min = a[i] < min ? a[i] : min;
         }
 
         return min;
     }
 
-    private double getMaxValue(double [][]a, int j) {
+    private double getMaxValue(double []a) {
         double max = Double.MIN_VALUE;
         for (int i = 0; i < a.length; ++i) {
-            max = a[i][j] > max ? a[i][j] : max;
+            max = a[i] > max ? a[i] : max;
         }
 
         return max;
     }
 
-    private double accumulation(double [][]a, int j) {
+    private double accumulation(double []a) {
         double sum = 0;
         for (int i = 0; i < a.length; ++i) {
-            sum += a[i][j];
+            sum += a[i];
         }
 
         return sum;
     }
 
-    private double accumulationAndSqrt(double [][]a, int j) {
+    private double accumulationAndSqrt(double []a) {
         double sum = 0;
         for (int i = 0; i < a.length; ++i) {
-            sum += Math.pow(a[i][j], 2);
+            sum += Math.pow(a[i], 2);
         }
 
         return Math.sqrt(sum);
