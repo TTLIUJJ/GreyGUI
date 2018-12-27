@@ -29,13 +29,10 @@ public class OpenButton extends JButton {
 
             if (rVal == JFileChooser.APPROVE_OPTION) {
                 File file = chooser.getSelectedFile();
-                System.out.println(file.getName());
                 dataTable.openNewDataTable(file);
             }
 
         }
     }
-
-
 
 }

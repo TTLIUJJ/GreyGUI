@@ -24,7 +24,7 @@ public class Graph {
         theme.setRegularFont(new Font("宋体", Font.PLAIN, 10));
         ChartFactory.setChartTheme(theme);
 
-        CategoryDataset dataset = getDataset();
+        CategoryDataset dataset = getFirstDataSet();
         JFreeChart chart = ChartFactory.createLineChart(
                 "我的折线图",
                 "横 坐 标 啊",
@@ -35,6 +35,7 @@ public class Graph {
                 true,
                 false
         );
+
 
         plot = (CategoryPlot)chart.getPlot();
         plot.setBackgroundPaint(Color.LIGHT_GRAY);
@@ -50,12 +51,47 @@ public class Graph {
         return jPanel;
     }
 
-    private static CategoryDataset getDataset() {
+    public static CategoryDataset selectGraph(int index) {
+        switch (index) {
+            case 0:
+                return getFirstDataSet();
+
+            case 1:
+                break;
+
+            case 2:
+                break;
+
+            case 3:
+                break;
+
+            default:
+                return getDefaultDataSet();
+
+        }
+        return null;
+    }
+
+    public static CategoryDataset getDefaultDataSet() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         return dataset;
     }
 
-    private static CategoryDataset update() {
+    public static CategoryPlot getPlot() {
+        return plot;
+    }
+
+    public static void testSet1() {
+        System.out.println("????");
+        plot.setDataset(new DefaultCategoryDataset());
+    }
+
+    public static  void testSet2() {
+        System.out.println("!!!!");
+        plot.setDataset(getFirstDataSet());
+    }
+
+    public static CategoryDataset getFirstDataSet() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         dataset.addValue(1, "First", "2013");
         dataset.addValue(3, "First", "2014");
@@ -74,12 +110,5 @@ public class Graph {
         return dataset;
     }
 
-    public static void testData() {
-        System.out.println("???");
-        JPanel graph = GreyGUI.getGUIComponent().getGraph();
-        plot.setDataset(update());
-        graph.repaint();
-        graph.updateUI();
-    }
 
 }

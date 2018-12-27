@@ -35,8 +35,9 @@ public class GreyGUI extends JFrame {
     private ModelBox<String> modelBox;
     private RadioButton radioButton;
     private JLabel imageLabel;
-    private JPanel graph;
     private JLabel degreeLabel;
+    private DataBag dataBag;
+    private DegreeTextArea degreeTextArea;
 
     private  GreyGUI() {
         super();
@@ -53,11 +54,12 @@ public class GreyGUI extends JFrame {
 
     public void initComponent() {
         dataTable = new DataTable();
+        degreeTextArea = new DegreeTextArea();
         dataPane = new JScrollPane(dataTable);
         whitePanel  = new JPanel();
         dataLabel   = new JLabel("原始数据预览");
         openButton  = new OpenButton("打开", dataTable);
-        startButton = new StartButton("开始", dataTable);
+        startButton = new StartButton("开始", dataTable, degreeTextArea);
         saveButton  = new JButton("保存");
         saveButton2 = new JButton("另存为");
         clearButton = new JButton("清零");
@@ -79,7 +81,6 @@ public class GreyGUI extends JFrame {
         degreeLabel.setFont(new Font("宋体", Font.BOLD, 15));
         degreeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         degreeLabel.setVerticalAlignment(SwingConstants.CENTER);
-        graph = Graph.getGraph();
         radioButton = new RadioButton();
 
 
@@ -96,14 +97,14 @@ public class GreyGUI extends JFrame {
         add(new JScrollPane(dataTable), new GBC(5, 1, 1, 11).setFill(GBC.BOTH).setWeight(1,     0));
 
         add(radioButton, new GBC(0, 2, 5, 1).setFill(GBC.BOTH).setWeight(1, 0));
-        add(graph, new GBC(0, 3, 5, 7).setFill(GBC.BOTH).setWeight(0, 1));
+        add(radioButton.getGraphPanel(), new GBC(0, 3, 5, 7).setFill(GBC.BOTH).setWeight(0, 1));
 
         add(degreeLabel,  new GBC(0, 12, 12, 2).setFill(GBC.BOTH).setWeight(1, 0));
-        add(new DegreeTextArea(),   new GBC(0, 14, 12, 2).setFill(GBC.BOTH).setWeight(1, 0));
-
+        add(degreeTextArea, new GBC(0, 14, 12, 2).setFill(GBC.BOTH).setWeight(1, 0));
     }
 
     public void laterInitListener() {
+        dataTable.laterInitListener();
         openButton.laterInitListener();
         startButton.laterInitListener();
         nondimensionTypeBox.laterInitListener();
@@ -140,12 +141,21 @@ public class GreyGUI extends JFrame {
         return modelBox;
     }
 
+    public DegreeTextArea getDegreeTextArea() {
+        return degreeTextArea;
+    }
+
     public DataTable getDataTable() {
         return dataTable;
     }
 
-    public JPanel getGraph() {
-        return graph;
+    public DataBag getDataBag() {
+        return dataBag;
+    }
+
+
+    public void setDataBag(DataBag dataBag) {
+        this.dataBag = dataBag;
     }
 
     public static GreyGUI getGUIComponent() {
@@ -160,11 +170,10 @@ public class GreyGUI extends JFrame {
         return greyGUI;
     }
 
-    public static void main(String []args) {
+    public static void main(String []args) throws Exception {
         GreyGUI greyGUI = new GreyGUI();
         greyGUI.laterInitListener();
         SwingConsole.run(greyGUI, 800, 600);
-
     }
 }
 

@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.Arrays;
 
 public class DataTable extends JTable {
+    private static GreyGUI greyGUI;
     private TableDataModel tableDataModel = new TableDataModel();
     private DataBag dataBag;
 
@@ -21,28 +22,21 @@ public class DataTable extends JTable {
         setModel(tableDataModel);
     }
 
-    public void openNewDataTable(File file) {
-        tableDataModel.setTableData(file);
-        setModel(tableDataModel);
-
-        for (DataModel model : tableDataModel.getDataModelList()) {
-            System.out.println(model);
+    public void laterInitListener() {
+        if (greyGUI == null) {
+            greyGUI = GreyGUI.getGUIComponent();
         }
     }
 
-    public void startCompute(NondimensionType type, Model model) {
-        this.dataBag = new DataBag(tableDataModel.getDataModelList());
+    public void openNewDataTable(File file) {
+        tableDataModel.setTableData(file);
+        setModel(tableDataModel);
+    }
 
+    public void startCompute(NondimensionType type, Model model) {
+        dataBag = new DataBag(tableDataModel.getDataModelList());
         dataBag.nondimensionalization(type);
         dataBag.modelAlgorithm(model);
+        greyGUI.setDataBag(dataBag);
     }
-
-    public DataBag getDataBag() {
-        return dataBag;
-    }
-
-    public void setDataBag(DataBag dataBag) {
-        this.dataBag = dataBag;
-    }
-
 }
