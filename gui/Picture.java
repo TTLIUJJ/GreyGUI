@@ -1,4 +1,4 @@
-package gui.gra;
+package gui;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;

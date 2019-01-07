@@ -13,4 +13,8 @@ public class DegreeTextArea extends JTextArea {
 
         this.setBorder(new LineBorder(Color.BLACK, 1, true));
     }
+
+    public String getResult() {
+        return this.getText();
+    }
 }

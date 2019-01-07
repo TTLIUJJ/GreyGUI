@@ -25,7 +25,10 @@ public class RadioButton extends JPanel {
     private JRadioButton relativeButton;
     private JRadioButton degreeButton;
 
-    public RadioButton() {
+    private JFreeChart jFreeChart;
+    private JButton clearButton;
+
+    public RadioButton(JButton clearButton) {
         rawDataButton  = new JRadioButton("原始数据图",  false);
         standardButton = new JRadioButton("无量钢化图",  false);
         relativeButton = new JRadioButton("关联系数图",  false);
@@ -40,6 +43,8 @@ public class RadioButton extends JPanel {
         add(standardButton);
         add(relativeButton);
         add(degreeButton);
+
+        this.clearButton = clearButton;
     }
 
     public void laterInitListener() {
@@ -53,6 +58,8 @@ public class RadioButton extends JPanel {
         standardButton.addActionListener(new StandardGraph());
         relativeButton.addActionListener(new RelativeGraph());
         degreeButton.addActionListener(new DegreeGraph());
+
+        clearButton.addActionListener(new DefaultGraph());
     }
 
     public JPanel getGraphPanel() {
@@ -63,7 +70,7 @@ public class RadioButton extends JPanel {
         ChartFactory.setChartTheme(theme);
 
         CategoryDataset dataset = new DefaultCategoryDataset();
-        JFreeChart chart = ChartFactory.createLineChart(
+        jFreeChart = ChartFactory.createLineChart(
                 "我的折线图",
                 "",
                 "",
@@ -73,17 +80,29 @@ public class RadioButton extends JPanel {
                 true,
                 false
         );
-        plot = (CategoryPlot)chart.getPlot();
+        plot = (CategoryPlot)jFreeChart.getPlot();
         plot.setBackgroundPaint(Color.LIGHT_GRAY);
         plot.setRangeGridlinePaint(Color.BLACK);
         plot.setOutlinePaint(Color.BLACK);
 
-        ChartFrame frame = new ChartFrame("一个折线图", chart);
+        ChartFrame frame = new ChartFrame("一个折线图", jFreeChart);
         frame.pack();
 
         return frame.getChartPanel();
     }
 
+    public JFreeChart getjFreeChart() {
+        return jFreeChart;
+    }
+
+    public class DefaultGraph implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            CategoryDataset dataset = new DefaultCategoryDataset();
+            plot.setDataset(dataset);
+            bg.clearSelection();
+        }
+    }
 
     public class RawDataGraph implements ActionListener {
         @Override
@@ -148,6 +167,13 @@ public class RadioButton extends JPanel {
             }
 
             plot.setDataset(dataset);
+        }
+    }
+
+    public class ResultListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("shit...");
         }
     }
 }
