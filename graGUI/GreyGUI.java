@@ -1,4 +1,4 @@
-package gui;
+package graGUI;
 
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -45,7 +45,7 @@ public class GreyGUI extends JFrame {
     private DataBag dataBag;
     private DegreeTextArea degreeTextArea;
 
-    private  GreyGUI() {
+    public  GreyGUI() {
         super();
         addWindowListener(new WindowAdapter() {
             @Override
@@ -238,11 +238,11 @@ public class GreyGUI extends JFrame {
         return greyGUI;
     }
 
-    public static void main(String []args) throws Exception {
-        GreyGUI greyGUI = new GreyGUI();
-        greyGUI.laterInitListener();
-        SwingConsole.run(greyGUI, 800, 600);
-    }
+//    public static void main(String []args) throws Exception {
+//        GreyGUI greyGUI = new GreyGUI();
+//        greyGUI.laterInitListener();
+//        SwingConsole.run(greyGUI, 800, 600);
+//    }
 }
 
 

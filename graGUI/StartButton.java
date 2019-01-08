@@ -1,4 +1,4 @@
-package gui;
+package graGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -42,6 +42,7 @@ public class StartButton extends JButton {
                     return o2.compareTo(o1);
                 }
             });
+
             for (int i = 1; i < degree.length; ++i) {
                 treeMap.put(degree[i], i);
             }

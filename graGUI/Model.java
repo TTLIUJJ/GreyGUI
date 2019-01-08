@@ -1,4 +1,4 @@
-package gui;
+package graGUI;
 
 public enum Model {
     NONE(0, "选择灰色关联算法"),

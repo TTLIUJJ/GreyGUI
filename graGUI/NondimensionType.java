@@ -1,4 +1,4 @@
-package gui;
+package graGUI;
 
 public enum  NondimensionType {
     NONE(0, "选择无量纲化算法"),

@@ -1,4 +1,4 @@
-package gui;
+package graGUI;
 
 import javax.swing.*;
 import java.io.File;

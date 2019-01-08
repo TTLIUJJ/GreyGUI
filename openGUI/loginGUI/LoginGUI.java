@@ -49,7 +49,6 @@ public class LoginGUI extends JFrame {
         initListener();
     }
 
-
     private void initListener() {
         registerButton.addActionListener(new ActionListener() {
             @Override
