@@ -3,6 +3,7 @@ package gui;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -35,7 +36,12 @@ public class StartButton extends JButton {
 
             DataBag dataBag = greyGUI.getDataBag();
             double []degree = dataBag.getDegree();
-            TreeMap<Double, Integer> treeMap = new TreeMap<>();
+            TreeMap<Double, Integer> treeMap = new TreeMap<>(new Comparator<Double>() {
+                @Override
+                public int compare(Double o1, Double o2) {
+                    return o2.compareTo(o1);
+                }
+            });
             for (int i = 1; i < degree.length; ++i) {
                 treeMap.put(degree[i], i);
             }

@@ -2,7 +2,7 @@ package gui;
 
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import test.SwingConsole;
+import main.SwingConsole;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -79,11 +79,11 @@ public class GreyGUI extends JFrame {
         dataLabel.setHorizontalAlignment(SwingConstants.CENTER);
         dataLabel.setVerticalAlignment(SwingConstants.CENTER);
         nondimensionTypeBox.addObject(new String[] {"选择无量纲化算法", "标准化法", "极差化法", "线性比例法", "归一化法", "向量规范法"});
-        modelBox.addObject(new String[] {"选择灰色关联算法", "传统灰色关联算法", "广义灰色关联算法", "动态灰色关联算法", "信息熵灰色关联算法"});
+        modelBox.addObject(new String[] {"选择灰色关联度算法", "传统灰色关联度算法", "广义灰色关联度算法", "动态灰色关联度算法", "信息熵灰色关联度算法"});
         imageLabel     = new JLabel("imageLabel" );
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imageLabel.setVerticalAlignment(SwingConstants.CENTER);
-        degreeLabel    = new JLabel("灰色关联度及其排名");
+        degreeLabel    = new JLabel("比较序列的灰色关联度");
         degreeLabel.setFont(new Font("宋体", Font.BOLD, 15));
         degreeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         degreeLabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -127,7 +127,21 @@ public class GreyGUI extends JFrame {
 
                 FileSystemView fileSystemView = FileSystemView.getFileSystemView();
                 File home = fileSystemView.getHomeDirectory();
-                File file = new File(home.getPath() + "\\\\关联序.txt");
+                /*
+                 * 文件需要判断操作系统
+                 *  mac os "/关联序"
+                 * windows "\关联序"
+                 */
+                File file = null;
+                String os = System.getProperty("os.name");
+                os = os.toLowerCase();
+                if (os.contains("os")) {
+                    file = new File(home.getPath() + "/关联序.txt");
+                }
+                else {
+                    file = new File(home.getPath() + "\\关联序.txt");
+                }
+
                 BufferedWriter writer = null;
                 try {
                     writer = new BufferedWriter(new FileWriter(file));
