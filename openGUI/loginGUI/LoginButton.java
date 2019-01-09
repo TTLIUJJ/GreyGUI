@@ -1,15 +1,18 @@
 package openGUI.loginGUI;
 
 import graGUI.GreyGUI;
+import main.MysqlUtil;
 import main.SwingConsole;
 import openGUI.PasswordTextField;
 import openGUI.UsernameTextField;
+import openGUI.registerGUI.RegisterGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LoginButton extends JButton {
+    private MysqlUtil mysqlUtil = MysqlUtil.getInstance();
     private UsernameTextField usernameTextField;
     private PasswordTextField passwordTextField;
 
@@ -32,15 +35,15 @@ public class LoginButton extends JButton {
                 username = usernameTextField.getTextString();
                 password = passwordTextField.getTextString();
 
-                System.out.println("in login GUI:" +
-                        "\nusername: " + username +
-                        "\npassword: " + password);
+//                System.out.println("in register GUI:" +
+//                        "\nusername: " + username +
+//                        "\npassword: " + password);
 
                 try {
                     if (username == null || password == null || username.length() == 0 || password.length() == 0) {
                         JOptionPane.showConfirmDialog(null, "用户或者密码不能为空", "登录失败",JOptionPane.DEFAULT_OPTION);
                     }
-                    else if (username.equals("admin") && password.equals("123456")) {
+                    else if (mysqlUtil.login(username, password)) {
                         LoginGUI loginGUI = SwingConsole.getLoginGUI();
                         loginGUI.setVisible(false);
 

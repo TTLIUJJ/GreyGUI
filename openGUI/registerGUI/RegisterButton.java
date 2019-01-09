@@ -1,5 +1,6 @@
 package openGUI.registerGUI;
 
+import main.MysqlUtil;
 import main.SwingConsole;
 import openGUI.PasswordTextField;
 import openGUI.UsernameTextField;
@@ -10,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class RegisterButton extends JButton {
+    private MysqlUtil mysqlUtil = MysqlUtil.getInstance();
     private UsernameTextField usernameTextField;
     private PasswordTextField passwordTextField;
     private PasswordTextField againTextField;
@@ -36,10 +38,10 @@ public class RegisterButton extends JButton {
                 password = passwordTextField.getTextString();
                 again    = againTextField.getTextString();
 
-                System.out.println("in register GUI:" +
-                        "\nusername: " + username +
-                        "\npassword: " + password +
-                        "\nagain   : " + again);
+//                System.out.println("in register GUI:" +
+//                        "\nusername: " + username +
+//                        "\npassword: " + password +
+//                        "\nagain   : " + again);
 
                 try {
                     if (username == null || password == null || again == null) {
@@ -54,7 +56,7 @@ public class RegisterButton extends JButton {
                     else if(!password.equals(again)) {
                         JOptionPane.showConfirmDialog(null, "两次输入的密码不相同", "注册失败",JOptionPane.DEFAULT_OPTION);
                     }
-                    else {
+                    else if (mysqlUtil.register(username, password)){
                         JOptionPane.showConfirmDialog(null, "注册成功！请重新登录", "注册成功",JOptionPane.DEFAULT_OPTION);
 
                         RegisterGUI registerGUI = SwingConsole.getRegisterGUI();
@@ -62,6 +64,9 @@ public class RegisterButton extends JButton {
 
                         LoginGUI loginGUI = SwingConsole.getLoginGUI();
                         loginGUI.setVisible(true);
+                    }
+                    else {
+                        JOptionPane.showConfirmDialog(null, "用户名已被注册", "注册失败",JOptionPane.DEFAULT_OPTION);
                     }
                 } catch (Exception e1) {
                     JOptionPane.showConfirmDialog(null, "系统出现了未知错误", "注册失败",JOptionPane.DEFAULT_OPTION);

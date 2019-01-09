@@ -82,12 +82,12 @@ public class Graph {
     }
 
     public static void testSet1() {
-        System.out.println("????");
+
         plot.setDataset(new DefaultCategoryDataset());
     }
 
     public static  void testSet2() {
-        System.out.println("!!!!");
+
         plot.setDataset(getFirstDataSet());
     }
 
