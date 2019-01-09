@@ -13,17 +13,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class RegisterGUI extends JFrame {
-    private JLabel usernameLabel          = new JLabel("    用户");
-    private JLabel passwordLabel          = new JLabel("    密码");
-    private JLabel againLabel             = new JLabel("再次输出");
-    private LoginButton loginButton       = new LoginButton("登录");
-    private RegisterButton registerButton = new RegisterButton("确认");
+    private JLabel usernameLabel          = new JLabel("　　用户");
+    private JLabel passwordLabel          = new JLabel("　　密码");
+    private JLabel againLabel             = new JLabel("重复密码");
+    private JButton loginButton           = new JButton("返回登录");
+    private RegisterButton registerButton = new RegisterButton("确认注册");
     private JTextField usernameTextField  = registerButton.getUserNameTextField();
     private JTextField passwordTextField  = registerButton.getPasswordTextField();
     private JTextField againTextField     = registerButton.getAgainTextField();
 
     public RegisterGUI() {
-        super();
+        super("灰色关联计算软件");
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

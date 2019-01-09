@@ -20,7 +20,7 @@ public class LoginGUI extends JFrame {
     private JTextField passwordTextField = loginButton.getPasswordTextField();
 
     public LoginGUI() {
-        super();
+        super("灰色关联计算软件");
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

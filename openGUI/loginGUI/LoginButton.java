@@ -37,15 +37,21 @@ public class LoginButton extends JButton {
                         "\npassword: " + password);
 
                 try {
-                    if (username.equals("admin") && password.equals("123456")) {
+                    if (username == null || password == null || username.length() == 0 || password.length() == 0) {
+                        JOptionPane.showConfirmDialog(null, "用户或者密码不能为空", "登录失败",JOptionPane.DEFAULT_OPTION);
+                    }
+                    else if (username.equals("admin") && password.equals("123456")) {
                         LoginGUI loginGUI = SwingConsole.getLoginGUI();
                         loginGUI.setVisible(false);
 
                         GreyGUI greyGUI = SwingConsole.getGreyGUI();
                         greyGUI.setVisible(true);
                     }
+                    else {
+                        JOptionPane.showConfirmDialog(null, "用户或者密码输入错误", "登录失败",JOptionPane.DEFAULT_OPTION);
+                    }
                 } catch (NullPointerException nullE) {
-
+                    JOptionPane.showConfirmDialog(null, "系统出现了未知错误", "登录失败",JOptionPane.DEFAULT_OPTION);
                 }
             }
         });

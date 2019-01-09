@@ -38,7 +38,7 @@ public class SwingConsole {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                frame.setTitle("灰色关联计算软件");
+//                frame.setTitle("灰色关联计算软件");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setSize(width, height);
                 frame.setVisible(false);

@@ -35,7 +35,7 @@ public class ModelBox<E> extends JComboBox<E> {
             int index    = ((JComboBox)e.getSource()).getSelectedIndex();
             String desc  = (String)((JComboBox)e.getSource()).getSelectedItem();
             ModelBox<String> modelBox = greyGUI.getModelBox();
-
+            
             switch (index) {
                 case 1:
                     if (desc.equals(Model.Traditional.getDesc())) {

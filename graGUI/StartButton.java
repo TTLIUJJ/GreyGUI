@@ -32,6 +32,13 @@ public class StartButton extends JButton {
             NondimensionTypeBox nondimensionTypeBox1 = greyGUI.getNondimensionTypeBox();
             ModelBox modelBox = greyGUI.getModelBox();
 
+            if (nondimensionTypeBox1.getType() == null) {
+                System.out.println("1 null");
+            }
+            if (modelBox.getAlModel() == null) {
+                System.out.println("2 null");
+            }
+
             dataTable.startCompute(nondimensionTypeBox1.getType(), modelBox.getAlModel());
 
             DataBag dataBag = greyGUI.getDataBag();

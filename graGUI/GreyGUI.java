@@ -46,7 +46,7 @@ public class GreyGUI extends JFrame {
     private DegreeTextArea degreeTextArea;
 
     public  GreyGUI() {
-        super();
+        super("灰色关联计算软件");
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
